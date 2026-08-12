@@ -1778,33 +1778,11 @@ async function saveLLMSettings() {
 
 async function saveSourceSettings() {
   const folderPath = $('folderPathInput').value.trim();
+  const patch = {};
   if (folderPath) {
-    await api('/api/sources', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      // 一个投递目录统一接收 PDF、EPUB、Markdown、Word 和常见文本格式；
-      // 后端按扩展名自动分类。此前这里写死 PDF，导致设置目录后 MD/EPUB
-      // 永远不会被自动导入。
-      body: JSON.stringify({ sources: [{ path: folderPath, type: 'auto' }] })
-    });
+    patch.sources = [{ path: folderPath, glob: '**/*.{pdf,PDF}' }];
   }
-  
-  await api('/api/settings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ academic: {
-      auto_ingest_on_start: $('autoIngestCheck').checked,
-      watch_inbox: $('watchInboxCheck').checked
-    } })
-  });
-  await api('/api/settings', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ translation: {
-      auto_to_simplified_chinese: $('translateCheck').checked,
-      target: 'zh-CN'
-    } })
-  });
+  await api('/api/settings', { method:'POST', body:JSON.stringify(patch) });
   alert('文献目录设置已保存！');
   loadData();
 }

@@ -4,9 +4,10 @@
 # 派生数据独立于程序目录，升级程序不影响数据。
 data_root: "data"
 
-# 要扫描的 PDF 目录
+# 要扫描的 PDF 目录。用户把 PDF 放入此目录后，点击「扫描并导入」。
+# 也可以直接在 Web 界面的「设置 → 文献目录」中修改。
 sources:
-  - path: "~/Documents/博士论文参考文献/无名园书籍库/投递箱"
+  - path: "./books"
     glob: "**/*.{pdf,PDF}"
 
 # 大模型 API 配置（DeepSeek、智谱、Kimi、OpenAI 等兼容接口均可）
