@@ -837,58 +837,40 @@ header {
 
         <!-- LLM TAB -->
         <div id="stab-llm-content">
-          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">选择生成回答所用的大语言模型（LLM），填写 API Key 后点击「获取模型列表」选择具体模型。</div>
+          <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">配置大语言模型 API，支持 DeepSeek、智谱、Kimi、OpenAI 等兼容接口。</div>
 
-          <!-- Provider cards -->
-          <div id="llmProviderCards" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;"></div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; display: block; margin-bottom: 4px;">平台预设</label>
+            <select id="llm-provider-select" class="model-select" style="width:100%" onchange="onLlmPreset()">
+              <option value="deepseek">DeepSeek</option>
+              <option value="glm">智谱 GLM</option>
+              <option value="kimi">Kimi 月之暗面</option>
+              <option value="openai">OpenAI</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
 
-          <!-- API Config for selected provider -->
-          <div id="llmConfigPanel" style="display: none; border: 1px solid var(--accent-border); background: var(--accent-light); border-radius: 10px; padding: 16px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-              <span id="llmSelectedIcon" style="font-size: 22px;"></span>
-              <div>
-                <div style="font-weight: 700; font-size: 15px;" id="llmSelectedName"></div>
-                <div style="font-size: 12px; color: var(--text-muted);" id="llmSelectedDesc"></div>
-              </div>
-            </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; display: block; margin-bottom: 4px;">API 地址</label>
+            <input type="text" id="llmBaseUrlInput" class="search-input" placeholder="https://api.deepseek.com/v1">
+          </div>
 
-            <div id="llmLocalConfig" style="display: none;">
-              <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">🦙 Ollama 本地服务，无需 API Key</div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span style="font-size: 12px; width: 80px;">Base URL:</span>
-                <input type="text" id="ollamaBaseUrl" class="search-input" style="flex: 1;" value="http://localhost:11434">
-              </div>
-            </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; display: block; margin-bottom: 4px;">API Key</label>
+            <input type="password" id="llmApiKeyInput" class="search-input" placeholder="sk-...">
+          </div>
 
-            <div id="llmCloudConfig">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <span style="font-size: 12px; width: 80px; flex-shrink: 0;">API Key:</span>
-                <input type="password" id="llmApiKeyInput" class="search-input" style="flex: 1;" placeholder="输入 API Key...">
-              </div>
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <span style="font-size: 12px; width: 80px; flex-shrink: 0;">Base URL:</span>
-                <input type="text" id="llmBaseUrlInput" class="search-input" style="flex: 1;" readonly>
-              </div>
-            </div>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; display: block; margin-bottom: 4px;">模型名称</label>
+            <input type="text" id="llmModelSearch" class="search-input" placeholder="deepseek-chat">
+          </div>
 
-            <!-- Model picker -->
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span style="font-size: 12px; width: 80px; flex-shrink: 0;">模型:</span>
-              <div style="position: relative; flex: 1;">
-                <input type="text" id="llmModelSearch" class="search-input" placeholder="搜索或输入模型名..." oninput="filterModelList('llm')" autocomplete="off" style="width: 100%; padding-right: 36px;">
-                <div id="llmModelDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; max-height: 200px; overflow-y: auto; z-index: 200; box-shadow: var(--shadow);"></div>
-              </div>
-              <button class="btn" id="llmFetchBtn" onclick="fetchModels('llm')" style="white-space: nowrap; font-size: 12px;">🔄 获取列表</button>
-            </div>
-            <div id="llmFetchMsg" style="font-size: 12px; color: var(--text-muted); margin-bottom: 6px;"></div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px;">
-              <button class="btn btn-primary" onclick="saveLLMSettings()">✓ 保存生成模型设置</button>
-            </div>
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button class="btn btn-primary" onclick="saveLLMSettings()">✓ 保存</button>
           </div>
 
           <div style="margin-top: 12px; font-size: 12px; padding: 8px; background: var(--panel); border-radius: 6px; color: var(--text-muted);">
-            💡 当前生效配置：<span id="llmCurrentConfig" style="color: var(--accent); font-weight: 600;"></span>
+            💡 当前生效：<span id="llmCurrentConfig" style="color: var(--accent); font-weight: 600;">未配置</span>
           </div>
         </div>
 
@@ -1604,19 +1586,15 @@ let availableProviders = [];
 
 function toggleSettingsModal() { 
   $('settingsModal').classList.toggle('show'); 
-  if ($('settingsModal').classList.contains('show')) {
-    loadProviders();
-  }
 }
 
 function switchSettingsTab(tab) {
-  ['llm', 'embed', 'source', 'ocr', 'privacy'].forEach(t => {
+  ['llm', 'source', 'ocr'].forEach(t => {
     const btn = $('stab-' + t);
     if (btn) btn.classList.toggle('active', t === tab);
     const content = $('stab-' + t + '-content');
     if (content) content.style.display = (t === tab) ? 'block' : 'none';
   });
-  if (tab === 'privacy') refreshPrivacyAudit();
 }
 
 async function loadProviders() {
@@ -1777,10 +1755,27 @@ document.addEventListener('click', (e) => {
 
 function initSettings() {
   const l = state.settings.llm || {};
-  if ($('llmModelSearch')) $('llmModelSearch').value = l.model || '';
+  if ($('llmModelSearch')) $('llmModelSearch').value = l.model || 'deepseek-chat';
   if ($('llmApiKeyInput')) $('llmApiKeyInput').value = l.api_key || '';
-  if ($('llmBaseUrlInput')) $('llmBaseUrlInput').value = l.base_url || 'https://api.deepseek.com/v1';
-  if ($('llmCurrentConfig')) $('llmCurrentConfig').textContent = l.model ? `${l.base_url} · ${l.model}` : '未配置';
+  const url = l.base_url || 'https://api.deepseek.com/v1';
+  if ($('llmBaseUrlInput')) $('llmBaseUrlInput').value = url;
+  if ($('llmCurrentConfig')) $('llmCurrentConfig').textContent = l.model ? `${l.model}` : '未配置';
+}
+
+const LLM_PRESETS = {
+  deepseek: { name:'DeepSeek', url:'https://api.deepseek.com/v1', model:'deepseek-chat' },
+  glm: { name:'智谱 GLM', url:'https://open.bigmodel.cn/api/paas/v4', model:'glm-4-flash' },
+  kimi: { name:'Kimi', url:'https://api.moonshot.cn/v1', model:'moonshot-v1-8k' },
+  openai: { name:'OpenAI', url:'https://api.openai.com/v1', model:'gpt-4o-mini' },
+  custom: { name:'自定义', url:'', model:'' }
+};
+
+function onLlmPreset() {
+  const v = ($('llm-provider-select')||{}).value;
+  if (!v || !LLM_PRESETS[v]) return;
+  const p = LLM_PRESETS[v];
+  if (p.url && $('llmBaseUrlInput')) $('llmBaseUrlInput').value = p.url;
+  if (p.model && $('llmModelSearch')) $('llmModelSearch').value = p.model;
 }
 
 async function saveLLMSettings() {
