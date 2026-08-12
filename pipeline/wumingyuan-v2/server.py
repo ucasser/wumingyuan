@@ -229,6 +229,15 @@ def ocr_test():
         return {"ok": False, "error": str(e)}
 
 
+# ── LLM 测试 ──
+@web.get("/api/llm/test")
+def llm_test():
+    if not state.llm:
+        return {"ok": False, "error": "未配置 LLM API"}
+    resp = state.llm._call_api([{"role":"user","content":"回复一个字：通"}])
+    return {"ok": not resp.get("error"), "model": state.llm.model, "error": resp.get("error")}
+
+
 # ── 文件管理 ──
 @web.get("/api/files")
 def list_files():
