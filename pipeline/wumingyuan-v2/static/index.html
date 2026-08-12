@@ -846,6 +846,10 @@ header {
               <option value="glm">智谱 GLM</option>
               <option value="kimi">Kimi 月之暗面</option>
               <option value="openai">OpenAI</option>
+              <option value="nvidia">NVIDIA NIM</option>
+              <option value="siliconflow">硅基流动</option>
+              <option value="groq">Groq</option>
+              <option value="doubao">豆包 火山引擎</option>
               <option value="custom">自定义</option>
             </select>
           </div>
@@ -1765,9 +1769,13 @@ function initSettings() {
 const LLM_PRESETS = {
   deepseek: { name:'DeepSeek', url:'https://api.deepseek.com/v1', model:'deepseek-chat' },
   glm: { name:'智谱 GLM', url:'https://open.bigmodel.cn/api/paas/v4', model:'glm-4-flash' },
-  kimi: { name:'Kimi', url:'https://api.moonshot.cn/v1', model:'moonshot-v1-8k' },
+  kimi: { name:'Kimi 月之暗面', url:'https://api.moonshot.cn/v1', model:'moonshot-v1-8k' },
   openai: { name:'OpenAI', url:'https://api.openai.com/v1', model:'gpt-4o-mini' },
-  custom: { name:'自定义', url:'', model:'' }
+  nvidia: { name:'NVIDIA NIM', url:'https://integrate.api.nvidia.com/v1', model:'nvidia/llama-3.1-nemotron-70b-instruct' },
+  siliconflow: { name:'硅基流动', url:'https://api.siliconflow.cn/v1', model:'deepseek-ai/DeepSeek-V3' },
+  groq: { name:'Groq', url:'https://api.groq.com/openai/v1', model:'llama-3.3-70b-versatile' },
+  doubao: { name:'豆包 火山引擎', url:'https://ark.cn-beijing.volces.com/api/v3', model:'doubao-pro-32k' },
+  custom: { name:'自定义 OpenAI 兼容', url:'', model:'' }
 };
 
 function onLlmPreset() {
