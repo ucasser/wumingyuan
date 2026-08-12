@@ -1,0 +1,40 @@
+# 无名园配置文件 — PDF 导入 + 检索 Agent + LLM 问答
+# 项目根目录由程序自动识别，无须手动配置。
+
+# 派生数据独立于程序目录，升级程序不影响数据。
+data_root: "data"
+
+# 要扫描的 PDF 目录
+sources:
+  - path: "~/Documents/博士论文参考文献/无名园书籍库/投递箱"
+    glob: "**/*.{pdf,PDF}"
+
+# 大模型 API 配置（DeepSeek、智谱、Kimi、OpenAI 等兼容接口均可）
+llm:
+  base_url: "https://api.deepseek.com/v1"
+  api_key: ""
+  model: "deepseek-chat"
+  timeout: 60
+
+# OCR（扫描版 PDF）
+ocr:
+  enabled: true
+  provider: "paddle"
+  dpi: 200
+  lang: "chi_sim+eng"
+  min_chars: 20
+  fallback_local: true
+  paddle:
+    api_token_env: "PADDLEOCR_ACCESS_TOKEN"
+    api_token: ""
+    base_url: ""
+    model: "PaddleOCR-VL-1.6"
+    request_timeout: 300
+    poll_timeout: 1200
+    batch_pages: 20
+    orientation: true
+    unwarping: false
+
+server:
+  host: "127.0.0.1"
+  port: 8888

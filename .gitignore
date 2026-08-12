@@ -1,0 +1,20 @@
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.pyc
+.venv/
+**/.venv/
+*.pyc
+data/
+**/data/
+OCR缓存/
+**/OCR缓存/
+迁移备份/
+**/迁移备份/
+# 论文草稿不公开
+paperproject/drafts/
+paperproject/03_论文草稿/
+paperproject/章节草稿/
+paperproject/.claude/
+

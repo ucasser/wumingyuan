@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+.venv
+.DS_Store
+OCR缓存
+data
+*.pyc

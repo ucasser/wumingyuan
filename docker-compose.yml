@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  wumingyuan:
+    build:
+      context: ./pipeline/wumingyuan-v2
+    ports:
+      - "8888:8888"
+    volumes:
+      # 挂载整个项目，使相对路径 "../原文库_obsidianvault" 正常工作
+      - .:/project
+    environment:
+      - PADDLEOCR_ACCESS_TOKEN=${PADDLEOCR_ACCESS_TOKEN:-}
