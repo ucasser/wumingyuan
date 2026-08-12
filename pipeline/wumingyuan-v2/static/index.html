@@ -712,17 +712,11 @@ header {
       <button class="icon-btn" onclick="toggleSidebar('left')" title="收起左侧栏" aria-label="收起左侧栏">‹</button>
       <div class="col-tab-bar">
         <button class="col-tab-btn active" id="tabSourcesBtn" onclick="switchLeftTab('sources')">📁 来源文献 (<span id="sourceCountTag">0</span>)</button>
-        <button class="col-tab-btn" id="tabOutlineBtn" onclick="switchLeftTab('outline')">📑 论文大纲</button>
       </div>
 
       <div id="sourcesHeaderBtns" style="display: flex; gap: 4px;">
         <button class="btn" style="padding: 4px 8px; font-size: 12px;" onclick="toggleSettingsModal()">⚙️ 路径</button>
         <button class="btn btn-primary" style="padding: 4px 8px; font-size: 12px;" onclick="triggerIngest()">扫描导入</button>
-      </div>
-
-      <div id="outlineHeaderBtns" style="display: none;">
-        <button class="btn btn-primary" style="padding: 4px 8px; font-size: 12px;" onclick="triggerOutlineUpload()">📄 导入大纲 Word</button>
-        <input type="file" id="outlineFileInput" accept=".docx,.md,.txt" style="display: none;" onchange="handleOutlineFileSelect(event)">
       </div>
     </div>
 
@@ -759,13 +753,6 @@ header {
         <!-- Dynamic Sources -->
       </div>
     </div>
-
-    <!-- TAB 2: THESIS OUTLINE TREE CONTENT -->
-    <div class="col-content" id="outlineTabContent" style="display: none;">
-      <div id="outlineTreeList">
-        <!-- Dynamic Outline Tree -->
-      </div>
-    </div>
   </div>
 
   <!-- MIDDLE COLUMN: CHAT WORKSPACE -->
@@ -785,7 +772,7 @@ header {
 
     <div class="messages-container" id="messagesContainer">
       <div class="msg-card msg-assistant">
-        你好！我是无名园学术 AI 助手。你可以勾选左侧文献来源，或导入你的论文 Word 大纲，点击目录章节向我提出课题论证请求。大模型将为你实时提炼并返回精确的原文引文。
+        你好！我是无名园学术 AI 助手。请先在设置中配置大模型 API Key，然后在左侧导入 PDF 文献，即可开始提问和检索。
       </div>
     </div>
 
@@ -1126,7 +1113,6 @@ async function loadData() {
 
     renderSources();
     renderNotes();
-    renderOutlineTree();
     initSettings();
     initTheme();
   } catch (ex) {
@@ -1135,14 +1121,7 @@ async function loadData() {
 }
 
 function switchLeftTab(tab) {
-  $('tabSourcesBtn').classList.toggle('active', tab === 'sources');
-  $('tabOutlineBtn').classList.toggle('active', tab === 'outline');
-
-  $('sourcesTabContent').style.display = tab === 'sources' ? 'block' : 'none';
-  $('outlineTabContent').style.display = tab === 'outline' ? 'block' : 'none';
-
-  $('sourcesHeaderBtns').style.display = tab === 'sources' ? 'flex' : 'none';
-  $('outlineHeaderBtns').style.display = tab === 'outline' ? 'block' : 'none';
+  // Only sources tab remains
 }
 
 function renderOutlineTree() {
