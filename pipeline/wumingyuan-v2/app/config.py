@@ -27,12 +27,12 @@ def load(path: str = None) -> Config:
     base = os.path.dirname(os.path.abspath(path))
     cfg["_base"] = base
     cfg["data_root"] = _abspath(cfg.get("data_root", "./data"), base)
-    cfg["db_path"] = _abspath(cfg["db_path"], base)
+    if cfg.get("db_path"):
+        cfg["db_path"] = _abspath(cfg["db_path"], base)
     for src in cfg.get("sources", []):
         src["path"] = os.path.expanduser(src["path"])
-    # Docker/NAS：用环境变量把本地 Ollama 地址指向宿主机或另一台机器
     ollama = os.environ.get("LOCALLM_OLLAMA_URL")
-    if ollama:
+    if ollama and cfg.get("embedding") and cfg.get("llm"):
         cfg["embedding"]["local"]["base_url"] = ollama
         cfg["llm"]["local"]["base_url"] = ollama
     return cfg
